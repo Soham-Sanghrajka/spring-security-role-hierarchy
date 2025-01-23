@@ -1,10 +1,10 @@
 package com.security.poc.security;
 
-
 import com.security.poc.constant.RoleConstants;
 import com.security.poc.dto.UserDTO;
 import com.security.poc.entity.Group;
 import com.security.poc.entity.User;
+import com.security.poc.exception.ResourceNotFoundException;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -13,8 +13,7 @@ import java.io.Serializable;
 
 @Component
 public class GeographicPermissionEvaluator implements PermissionEvaluator {
-
-
+    
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         if (authentication == null || !(permission instanceof String)) {
@@ -72,6 +71,10 @@ public class GeographicPermissionEvaluator implements PermissionEvaluator {
 
     private boolean checkUserCanAccessUserDetails(User user, Object targetUser) {
         UserDTO targetUserDto = (UserDTO) targetUser;
+
+        if(targetUserDto == null) {
+            throw  new ResourceNotFoundException("User Not Found.");
+        }
 
         // Only allow access if both users are in the same country, state, and city (if needed)
         if (RoleConstants.ROLE_COUNTRY_ADMIN.equals(user.getGroupRole()) && user.getCountry().getName().equals(targetUserDto.getCountry().getName())) {

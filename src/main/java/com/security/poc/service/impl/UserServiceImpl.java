@@ -1,6 +1,7 @@
 package com.security.poc.service.impl;
 
 import com.security.poc.entity.User;
+import com.security.poc.exception.ResourceNotFoundException;
 import com.security.poc.repository.UserRepository;
 import com.security.poc.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +18,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> allUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        return user;
     }
 }

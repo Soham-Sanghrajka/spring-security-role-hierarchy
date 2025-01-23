@@ -3,10 +3,13 @@ package com.security.poc.controller;
 import com.security.poc.entity.User;
 import com.security.poc.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -30,7 +34,13 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<List<User>> allUsers() {
         List<User> users = userService.allUsers();
-
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasPermission(#id, 'access_user_details')")
+    public ResponseEntity<User> getUserById(@PathVariable Long id){
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 }
