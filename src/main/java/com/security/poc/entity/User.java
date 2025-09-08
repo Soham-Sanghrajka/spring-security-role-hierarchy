@@ -33,19 +33,45 @@ public class User implements UserDetails, Serializable {
     private String email;
 
     private String username;
+
     private String password;
+<<<<<<< HEAD
+
+    private String primaryRole;
+
+    private String groupRole;
+
+    @ManyToOne
+    @JoinColumn(name = "countries_id" , referencedColumnName = "id")
+=======
 
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private Country country;
+
     @ManyToOne
+<<<<<<< HEAD
+    @JoinColumn(name = "states_id" , referencedColumnName = "id")
+=======
     @JoinColumn(name = "state_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private State state;
+
     @ManyToOne
+<<<<<<< HEAD
+    @JoinColumn(name = "cities_id" , referencedColumnName = "id")
+=======
     @JoinColumn(name = "city_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private City city;
+
     @ManyToOne
+<<<<<<< HEAD
+    @JoinColumn(name = "districts_id")
+=======
     @JoinColumn(name = "district_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private District district;
 
     @CreationTimestamp

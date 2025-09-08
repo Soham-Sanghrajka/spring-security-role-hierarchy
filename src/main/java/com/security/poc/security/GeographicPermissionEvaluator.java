@@ -1,15 +1,21 @@
 package com.security.poc.security;
 
+<<<<<<< HEAD
+=======
 
 import com.security.poc.constant.OperationType;
 import com.security.poc.constant.ResourceType;
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
 import com.security.poc.constant.RoleConstants;
 import com.security.poc.entity.Group;
 import com.security.poc.entity.Role;
 import com.security.poc.entity.User;
 import com.security.poc.exception.ResourceNotFoundException;
+<<<<<<< HEAD
+=======
 import com.security.poc.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -18,10 +24,14 @@ import java.io.Serializable;
 
 @Component("permissionEvaluator")
 public class GeographicPermissionEvaluator implements PermissionEvaluator {
+<<<<<<< HEAD
+    
+=======
 
     @Autowired
     private GroupRepository groupRepository;
 
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         if (authentication == null || !(permission instanceof String)) {
@@ -50,9 +60,47 @@ public class GeographicPermissionEvaluator implements PermissionEvaluator {
             Long groupId = targetDomainObject instanceof String ?
                     Long.parseLong((String) targetDomainObject) : (Long) targetDomainObject;
 
+<<<<<<< HEAD
+        // Deny access if no conditions are met
+        return false;
+    }
+
+    private boolean checkUserCanAccessUserDetails(User user, Object targetUser) {
+        UserDTO targetUserDto = (UserDTO) targetUser;
+
+        if(targetUserDto == null) {
+            throw  new ResourceNotFoundException("User Not Found.");
+        }
+
+        // Only allow access if both users are in the same country, state, and city (if needed)
+        if (RoleConstants.ROLE_COUNTRY_ADMIN.equals(user.getGroupRole()) && user.getCountry().getName().equals(targetUserDto.getCountry().getName())) {
+            return true;
+        }
+
+        if (RoleConstants.ROLE_STATE_ADMIN.equals(user.getGroupRole())
+                && user.getState().equals(targetUserDto.getState())
+                && user.getCountry().equals(targetUserDto.getCountry())) {
+            return true;
+        }
+
+        if (RoleConstants.ROLE_CITY_ADMIN.equals(user.getGroupRole())
+                && user.getCity().equals(targetUserDto.getCity())
+                && user.getState().equals(targetUserDto.getState())
+                && user.getCountry().equals(targetUserDto.getCountry())) {
+            return true;
+        }
+
+        if (RoleConstants.ROLE_DISTRICT_ADMIN.equals(user.getGroupRole())
+                && user.getDistrict().equals(targetUserDto.getDistrict())
+                && user.getCity().equals(targetUserDto.getCity())
+                && user.getState().equals(targetUserDto.getState())
+                && user.getCountry().equals(targetUserDto.getCountry())) {
+            return true;
+=======
             Group group = groupRepository.findById(groupId)
                     .orElseThrow(() -> new ResourceNotFoundException("Group not found"));
             return checkGeographicAccess(user, group);
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
         }
 
         return false;

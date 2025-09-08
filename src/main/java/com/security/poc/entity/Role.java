@@ -28,6 +28,12 @@ public class Role implements Serializable {
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users;
 
+<<<<<<< HEAD
+    @ManyToMany
+    @JoinTable(name = "roles_privileges", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
+    private Collection<Privilege> privileges;
+
+=======
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
@@ -49,4 +55,5 @@ public class Role implements Serializable {
         return this.privileges.stream()
                 .anyMatch(permission -> permission.getName().equals(permissionName));
     }
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
 }
