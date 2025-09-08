@@ -7,11 +7,11 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -67,11 +67,11 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("SUPER_ADMIN").implies("ADMIN")
-                .role("ADMIN").implies("COUNTRY_ADMIN")
+                .role("SUPER_ADMIN").implies("COUNTRY_ADMIN")
                 .role("COUNTRY_ADMIN").implies("STATE_ADMIN")
                 .role("STATE_ADMIN").implies("CITY_ADMIN")
                 .role("CITY_ADMIN").implies("DISTRICT_ADMIN")
+                .role("DISTRICT_ADMIN").implies("CHAPTER_ADMIN")
                 .build();
     }
 
@@ -80,6 +80,11 @@ public class SecurityConfig {
         DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(permissionEvaluator());
         return expressionHandler;
+    }
+
+    @Bean
+    static GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
     }
 
     @Bean

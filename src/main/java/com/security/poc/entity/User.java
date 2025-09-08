@@ -1,5 +1,6 @@
 package com.security.poc.entity;
 
+import com.security.poc.constant.AdminLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +8,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -22,7 +22,7 @@ import java.util.List;
 public class User implements UserDetails, Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
@@ -35,6 +35,7 @@ public class User implements UserDetails, Serializable {
     private String username;
 
     private String password;
+<<<<<<< HEAD
 
     private String primaryRole;
 
@@ -42,18 +43,35 @@ public class User implements UserDetails, Serializable {
 
     @ManyToOne
     @JoinColumn(name = "countries_id" , referencedColumnName = "id")
+=======
+
+    @ManyToOne
+    @JoinColumn(name = "country_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private Country country;
 
     @ManyToOne
+<<<<<<< HEAD
     @JoinColumn(name = "states_id" , referencedColumnName = "id")
+=======
+    @JoinColumn(name = "state_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private State state;
 
     @ManyToOne
+<<<<<<< HEAD
     @JoinColumn(name = "cities_id" , referencedColumnName = "id")
+=======
+    @JoinColumn(name = "city_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private City city;
 
     @ManyToOne
+<<<<<<< HEAD
     @JoinColumn(name = "districts_id")
+=======
+    @JoinColumn(name = "district_id", nullable = false)
+>>>>>>> 9465a732f88077dfa536a11a857b48420a2f4339
     private District district;
 
     @CreationTimestamp
@@ -70,6 +88,45 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        // Add role-based authorities
+        roles.forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+
+            // Add permissions from each role
+            if (role.getPrivileges() != null) {
+                role.getPrivileges().forEach(permission -> {
+                    authorities.add(new SimpleGrantedAuthority(permission.getName()));
+                });
+            }
+        });
+
+        return authorities;
+    }
+
+
+    public boolean hasRole(String roleName) {
+        return roles.stream()
+                .anyMatch(role -> role.getName().equals(roleName));
+    }
+
+    public boolean hasPermission(String permissionName) {
+        return roles.stream()
+                .anyMatch(role -> role.hasPermission(permissionName));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }
